@@ -35,6 +35,34 @@ byte row_14[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  };
 byte row_15[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  };
 
 
+byte A[5]={0x7c,0x44,0x44,0x7c,0x44};
+byte B[5]={0x7c,0x44,0x78,0x44,0x7c};
+byte C[5]={0x7c,0x40,0x40,0x40,0x7c};
+byte D[5]={0x78,0x44,0x44,0x44,0x78};
+byte E[5]={0x7c,0x40,0x78,0x40,0x7c};
+byte F[5]={0x7c,0x40,0x70,0x40,0x40};
+byte G[5]={0x7c,0x40,0x4c,0x44,0x7c};
+byte H[5]={0x44,0x44,0x7c,0x44,0x44};
+byte I[5]={0x7c,0x10,0x10,0x10,0x7c};
+byte J[5]={0x0c,0x04,0x04,0x44,0x7c};
+byte K[5]={0x44,0x48,0x70,0x48,0x44};
+byte L[5]={0x40,0x40,0x40,0x40,0x7c};
+byte M[5]={0x44,0x6c,0x54,0x44,0x44};
+byte N[5]={0x44,0x64,0x54,0x4c,0x44};
+byte O[5]={0x38,0x44,0x44,0x44,0x38};
+byte P[5]={0x78,0x44,0x78,0x40,0x40};
+byte Q[5]={0x7c,0x44,0x44,0x7c,0x10};
+byte R[5]={0x78,0x44,0x78,0x44,0x44};
+byte S[5]={0x7c,0x40,0x7c,0x04,0x7c};
+byte T[5]={0x7c,0x10,0x10,0x10,0x10};
+byte U[5]={0x44,0x44,0x44,0x44,0x7c};
+byte V[5]={0x44,0x44,0x28,0x28,0x10};
+byte W[5]={0x44,0x44,0x54,0x54,0x28};
+byte X[5]={0x44,0x28,0x10,0x28,0x44};
+byte Y[5]={0x44,0x44,0x28,0x10,0x10};
+byte Z[5]={0x7c,0x08,0x10,0x20,0x7c};
+
+
 unsigned long   currentTime;
 unsigned long   loopTime;
 
@@ -148,13 +176,13 @@ void rainbowCycle()
         textPos++; 
         textWait = 0; // do this to scroll
       }
-      for(int b = 0;b<8;b++) {
-        if(textRotation == 90) {
-          drawBitmap90(b, b*6-textPos, CRGB::Black);
-        }else{
-          drawBitmap(b, b*6-textPos, CRGB::Black);
-        }
-      }
+//      for(int b = 0;b<8;b++) {
+//        if(textRotation == 90) {
+//          drawBitmap90(b, b*6-textPos, CRGB::Black);
+//        }else{
+//          drawBitmap(b, b*6-textPos, CRGB::Black);
+//        }
+//      }
       if(textPos > 48) {
         textPos = -16;// do this when reset
         textTrigger = false;
@@ -199,69 +227,113 @@ void colorChange()
   thistimer4.setPeriod(color_change_delay);
 }
 
-void displayBotellon(CRGB mat_color)
+byte* getLetterArrayFromChar(char letter){
+  switch(letter){
+    case 'A': return A;break;
+    case 'B': return B;break;
+    case 'C': return C;break;
+    case 'D': return D;break;
+    case 'E': return E;break;
+    case 'F': return F;break;
+    case 'G': return G;break;
+    case 'H': return H;break;
+    case 'I': return I;break;
+    case 'J': return J;break;
+    case 'K': return K;break;
+    case 'L': return L;break;
+    case 'M': return M;break;
+    case 'N': return N;break;
+    case 'O': return O;break;
+    case 'P': return P;break;
+    case 'Q': return Q;break;
+    case 'R': return R;break;
+    case 'S': return S;break;
+    default : return false;break;
+  }
+}
+
+// byte Z[5]={0x7c,0x08,0x10,0x20,0x7c};  
+void drawLetter(byte* letter, CRGB color, int offset_x = 0, int offset_y = 0) 
+{
+  for(int x = offset_x;x < offset_x+5;x++) {
+    for(int y = offset_y;y < offset_y+5;y++){
+      if(bitRead(letter[y], map(x-offset_x, 0, 5, 5, 0)) == 1) pm(x,y) = color;
+    }
+  }
+}
+
+void drawWord(String str, CRGB color, int offset_x = 0, int offset_y = 0)
+{
+  for(int i = 0;i<str.length();i++){
+    drawLetter(getLetterArrayFromChar(str.charAt(i)), color, i*6-offset_x, offset_y);
+  }
+}
+
+
+void displayBotellon(CRGB color)
 {
   EVERY_N_MILLIS_I(thistimer5, text_flow_delay){
-    
     textPos++;
-    color(CRGB::Black);
-    for(int b = 0;b<8;b++) {
-      if(textRotation == 90) {
-        drawBitmap90(b, b*6-textPos, mat_color);
-      }else{
-        drawBitmap(b, b*6-textPos, mat_color);
-      }
-    }
+    pm.fill(CRGB::Black);
+//    for(int b = 0;b<8;b++) {
+//      if(textRotation == 90) {
+//        drawBitmap90(b, b*6-textPos, mat_color);
+//      }else{
+//        drawBitmap(b, b*6-textPos, mat_color);
+//      }
+//    }
+
+    drawWord("BOTELLON", color, textPos, 5);
     pm.show();
-    if(textPos > 48) textPos = -16;
-    
+    if(textPos > 48) textPos = -16;   // ToDo: make dynamic from context
   }
   thistimer5.setPeriod(text_flow_delay);
 }
 
-void drawBitmap(int pos, int offset, CRGB color)
-{
-  for(int w = offset;w<offset+5;w++) {
-    int invert = map(w-offset, 0, 8, 8, 0);
-    if(bitRead(row_1[pos], invert-2) == 1) pm(w,0) = color;
-    if(bitRead(row_2[pos], invert-2) == 1) pm(w,1) = color;
-    if(bitRead(row_3[pos], invert-2) == 1) pm(w,2) = color;
-    if(bitRead(row_4[pos], invert-2) == 1) pm(w,3) = color;
-    if(bitRead(row_5[pos], invert-2) == 1) pm(w,4) = color;
-    if(bitRead(row_6[pos], invert-2) == 1) pm(w,5) = color;
-    if(bitRead(row_7[pos], invert-2) == 1) pm(w,6) = color;
-    if(bitRead(row_8[pos], invert-2) == 1) pm(w,7) = color;
-    if(bitRead(row_9[pos], invert-2) == 1) pm(w,8) = color;
-    if(bitRead(row_10[pos], invert-2) == 1) pm(w,9) = color;
-    if(bitRead(row_11[pos], invert-2) == 1) pm(w,10) = color;
-    if(bitRead(row_12[pos], invert-2) == 1) pm(w,11) = color;
-    if(bitRead(row_13[pos], invert-2) == 1) pm(w,12) = color;
-    if(bitRead(row_14[pos], invert-2) == 1) pm(w,13) = color;
-    if(bitRead(row_15[pos], invert-2) == 1) pm(w,14) = color;
-  }
-}
 
-void drawBitmap90(int pos, int offset, CRGB color)
-{
-  for(int h = offset;h<offset+5;h++) {
-    int invert = map(h-offset, 0, 8, 8, 0);
-    if(bitRead(row_1[pos], invert-2) == 1) pm(0, h) = color;
-    if(bitRead(row_2[pos], invert-2) == 1) pm(1, h) = color;
-    if(bitRead(row_3[pos], invert-2) == 1) pm(2, h) = color;
-    if(bitRead(row_4[pos], invert-2) == 1) pm(3, h) = color;
-    if(bitRead(row_5[pos], invert-2) == 1) pm(4, h) = color;
-    if(bitRead(row_6[pos], invert-2) == 1) pm(5, h) = color;
-    if(bitRead(row_7[pos], invert-2) == 1) pm(6, h) = color;
-    if(bitRead(row_8[pos], invert-2) == 1) pm(7, h) = color;
-    if(bitRead(row_9[pos], invert-2) == 1) pm(8, h) = color;
-    if(bitRead(row_10[pos], invert-2) == 1) pm(9, h) = color;
-    if(bitRead(row_11[pos], invert-2) == 1) pm(10, h) = color;
-    if(bitRead(row_12[pos], invert-2) == 1) pm(11, h) = color;
-    if(bitRead(row_13[pos], invert-2) == 1) pm(12, h) = color;
-    if(bitRead(row_14[pos], invert-2) == 1) pm(13, h) = color;
-    if(bitRead(row_15[pos], invert-2) == 1) pm(14, h) = color;
-  }
-}
+//void drawBitmap(int pos, int offset, CRGB color)
+//{
+//  for(int w = offset;w<offset+5;w++) {
+//    int invert = map(w-offset, 0, 8, 8, 0);
+//    if(bitRead(row_1[pos], invert-2) == 1) pm(w,0) = color;
+//    if(bitRead(row_2[pos], invert-2) == 1) pm(w,1) = color;
+//    if(bitRead(row_3[pos], invert-2) == 1) pm(w,2) = color;
+//    if(bitRead(row_4[pos], invert-2) == 1) pm(w,3) = color;
+//    if(bitRead(row_5[pos], invert-2) == 1) pm(w,4) = color;
+//    if(bitRead(row_6[pos], invert-2) == 1) pm(w,5) = color;
+//    if(bitRead(row_7[pos], invert-2) == 1) pm(w,6) = color;
+//    if(bitRead(row_8[pos], invert-2) == 1) pm(w,7) = color;
+//    if(bitRead(row_9[pos], invert-2) == 1) pm(w,8) = color;
+//    if(bitRead(row_10[pos], invert-2) == 1) pm(w,9) = color;
+//    if(bitRead(row_11[pos], invert-2) == 1) pm(w,10) = color;
+//    if(bitRead(row_12[pos], invert-2) == 1) pm(w,11) = color;
+//    if(bitRead(row_13[pos], invert-2) == 1) pm(w,12) = color;
+//    if(bitRead(row_14[pos], invert-2) == 1) pm(w,13) = color;
+//    if(bitRead(row_15[pos], invert-2) == 1) pm(w,14) = color;
+//  }
+//}
+//
+//void drawBitmap90(int pos, int offset, CRGB color)
+//{
+//  for(int h = offset;h<offset+5;h++) {
+//    int invert = map(h-offset, 0, 8, 8, 0);
+//    if(bitRead(row_1[pos], invert-2) == 1) pm(0, h) = color;
+//    if(bitRead(row_2[pos], invert-2) == 1) pm(1, h) = color;
+//    if(bitRead(row_3[pos], invert-2) == 1) pm(2, h) = color;
+//    if(bitRead(row_4[pos], invert-2) == 1) pm(3, h) = color;
+//    if(bitRead(row_5[pos], invert-2) == 1) pm(4, h) = color;
+//    if(bitRead(row_6[pos], invert-2) == 1) pm(5, h) = color;
+//    if(bitRead(row_7[pos], invert-2) == 1) pm(6, h) = color;
+//    if(bitRead(row_8[pos], invert-2) == 1) pm(7, h) = color;
+//    if(bitRead(row_9[pos], invert-2) == 1) pm(8, h) = color;
+//    if(bitRead(row_10[pos], invert-2) == 1) pm(9, h) = color;
+//    if(bitRead(row_11[pos], invert-2) == 1) pm(10, h) = color;
+//    if(bitRead(row_12[pos], invert-2) == 1) pm(11, h) = color;
+//    if(bitRead(row_13[pos], invert-2) == 1) pm(12, h) = color;
+//    if(bitRead(row_14[pos], invert-2) == 1) pm(13, h) = color;
+//    if(bitRead(row_15[pos], invert-2) == 1) pm(14, h) = color;
+//  }
+//}
 
 void readRot() 
 {
